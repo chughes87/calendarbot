@@ -1,55 +1,75 @@
-const { prop, curry, pipe, tap } = require('ramda')
-const fs = require('fs')
-const readline = require('readline')
-const getSecret = require('./getSecret')
-const { google } = require('googleapis')
-const calendar = google.calendar('v3')
+const { toPairs, join, reduce, lensPath, prop, path, groupBy, curry, tap, map, pick, over, lens, assoc, pipe, paths, useWith, props } = require('ramda');
+const {JWT} = require('google-auth-library');
+const getSecret = require('./getSecret');
+const { google } = require('googleapis');
 
-const tagLog = curry((tag, data) =>
-  console.log(`${tag}: ${JSON.stringify(data, null, 2)}`)
+const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+
+var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+const tagLog = curry((tag, log) => console.log(`${tag}: ${JSON.stringify(log, null, 2)}`));
+
+const formatDate = (start) =>
+  `${dayNames[start.getDay()]} ${start.getMonth()}/${start.getDate()}`;
+
+const formatTimes = ([start, end]) =>
+  `${start.getHours()}:${start.getMinutes()}-${end.getHours()}:${end.getMinutes()}`;
+
+const newDate = x => new Date(x);
+const startPath = ['start', 'dateTime'];
+const endPath = ['end', 'dateTime'];
+
+const formatEvents = pipe(
+  map(({ summary, time }) => `${time} ${summary}`),
+  join('\n')
 )
 
-// If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
-const TOKEN_PATH = 'token.json'
-
-getSecret(
-  'calendarbot_auth',
-  pipe(
-    listEvents,
-    tap(tagLog('events')),
-  )
+const processEvents = pipe(
+  map(pipe(
+    over(lensPath(startPath), newDate),
+    over(lensPath(endPath), newDate),
+    over(lens(paths([startPath, endPath]), assoc('time')), formatTimes),
+    over(lens(path(startPath), assoc('date')), formatDate),
+    pick(['summary', 'time', 'date']),
+  )),
+  groupBy(prop('date')),
+  toPairs,
+  reduce((string, [date, events]) =>
+    `${string}${date}\n${formatEvents(events)}\n\n`, '')
 )
 
-/**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-function listEvents(auth) {
-  const calendar = google.calendar({ version: 'v3', auth })
-  calendar.events.list(
-    {
-      calendarId: 'primary',
-      timeMin: new Date().toISOString(),
-      maxResults: 10,
-      singleEvents: true,
-      orderBy: 'startTime',
-    },
-    (err, res) => {
-      if (err) return console.log('The API returned an error: ' + err)
-      const events = res.data.items
-      if (events.length) {
-        console.log('Upcoming 10 events:')
-        events.map((event, i) => {
-          const start = event.start.dateTime || event.start.date
-          console.log(`${start} - ${event.summary}`)
-        })
-      } else {
-        console.log('No upcoming events found.')
-      }
+const main = (auth) => {
+  const jwtClient = new google.auth.JWT(
+    auth.client_email,
+    null,
+    auth.private_key,
+    SCOPES
+  );
+
+  const calendar = google.calendar({
+    version: 'v3',
+    project: auth.project_number,
+    auth: jwtClient
+  });
+
+  calendar.events.list({
+    calendarId: auth.calendar_id,
+    timeMin: (new Date()).toISOString(),
+    maxResults: 10,
+    singleEvents: true,
+    orderBy: 'startTime',
+  }, (error, result) => {
+    if (error) {
+      console.log('error: ', error);
+      return;
     }
-  )
-}
+
+    if (result.data.items.length) {
+       console.log('result: ', processEvents(result.data.items))
+    }
+    else {
+      console.log('No upcoming events found.');
+    }
+ });
+};
+
+getSecret('calendarbot_auth', main);
