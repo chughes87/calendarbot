@@ -64,7 +64,7 @@ const main = (auth) => {
     }
 
     if (result.data.items.length) {
-       console.log('result: ', processEvents(result.data.items))
+       return processEvents(result.data.items);
     }
     else {
       console.log('No upcoming events found.');
@@ -72,4 +72,4 @@ const main = (auth) => {
  });
 };
 
-getSecret('calendarbot_auth', main);
+exports.handler = () => getSecret('calendarbot_auth', main);
