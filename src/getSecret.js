@@ -1,3 +1,4 @@
+const { bind, pipe, prop } = require('ramda');
 const { promisify } = require('util')
 
 var AWS = require('aws-sdk'),
@@ -9,20 +10,12 @@ var client = new AWS.SecretsManager({
   region: region,
 })
 
-module.exports = (secretName, cb) =>
-  client.getSecretValue({ SecretId: secretName }, function(err, data) {
-    if (err) {
-      console.log(err)
-      return
-    }
+const getSecret = promisify(bind(client.getSecretValue, client));
 
-    if ('SecretString' in data) {
-      secret = data.SecretString
-    } else {
-      let buff = new Buffer(data.SecretBinary, 'base64')
-      decodedBinarySecret = buff.toString('ascii')
-    }
-
-    cb(JSON.parse(data.SecretString))
-  })
+module.exports = (secretName) =>
+  getSecret({ SecretId: secretName })
+    .then(pipe(
+      prop('SecretString'),
+      JSON.parse
+    ))
 
