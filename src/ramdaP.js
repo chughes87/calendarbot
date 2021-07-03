@@ -1,10 +1,14 @@
 const { pipeWith } = require('ramda');
 
-const unwrapPromise = (fn, res) =>
-  res instanceof Promise
-    ? res.then(fn)
-    : fn(res);
-const pipeP = pipeWith(unwrapPromise);
+const pipeP = (fns, onError) => (input) =>
+  pipeWith(
+    (fn, res) =>
+      res instanceof Promise
+        ? res.then(fn).catch(onError)
+        : fn(res),
+   fns
+  )(input);
+
 
 module.exports = {
   pipeP
