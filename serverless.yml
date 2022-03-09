@@ -18,7 +18,6 @@ functions:
   cronHandler:
     handler: src/index.handler
     events:
-      # Invoke Lambda function every 2nd minute from Mon-Fri
       - schedule: cron(45 * * * ? *)
     environment:
       TZ: <YOUR_TIMEZONE>
