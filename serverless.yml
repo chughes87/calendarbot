@@ -1,0 +1,24 @@
+org: chughes87
+app: calendarbot
+service: calendarbot
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-west-1
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource: <SECRET_ARN>
+
+functions:
+  cronHandler:
+    handler: src/index.handler
+    events:
+      # Invoke Lambda function every 2nd minute from Mon-Fri
+      - schedule: cron(45 * * * ? *)
+    environment:
+      TZ: <YOUR_TIMEZONE>

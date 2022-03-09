@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { filterNextHour, stringifyEvents } = require('./eventProcessor');
+const { filterNextHour, stringifyEvents } = require('../eventProcessor');
 
 jest.mock('moment', () => {
   const mmt = jest.requireActual('moment');

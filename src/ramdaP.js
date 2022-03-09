@@ -1,4 +1,6 @@
-const { pipeWith, pipe, apply, andThen, map } = require('ramda');
+const {
+  pipeWith, pipe, apply, andThen, map, curry,
+} = require('ramda');
 
 const promiseAll = ps => Promise.all(ps);
 
@@ -10,11 +12,11 @@ const pipeP = (fns, onError) => input =>
     fns,
   )(input);
 
-const convergeP = (fns, converger) => pipe(
-  map(fn => fn()),
+const convergeP = curry((fns, converger, value) => pipe(
+  map(fn => fn(value)),
   promiseAll,
   andThen(apply(converger)),
-)(fns);
+)(fns));
 
 module.exports = {
   pipeP,

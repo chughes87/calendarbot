@@ -1,6 +1,6 @@
 const {
   trim, filter, toPairs, join, reduce, lensPath, prop, path, groupBy, map,
-  pick, over, lens, assoc, pipe, paths, tap,
+  pick, over, lens, assoc, pipe, paths,
 } = require('ramda');
 const moment = require('moment');
 

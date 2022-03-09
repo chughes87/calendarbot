@@ -20,5 +20,9 @@
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-jest": "^26.1.1",
     "jest": "^27.5.1"
+  },
+  "serverless": {
+    "app": "calendarbot",
+    "org": "<YOUR_ORG>"
   }
 }
