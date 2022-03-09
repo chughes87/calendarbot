@@ -1,15 +1,11 @@
-const { pair, apply, objOf, bind, pipe, prop } = require('ramda');
+const {
+  pair, apply, objOf, bind, prop,
+} = require('ramda');
 const { promisify } = require('util');
+const AWS = require('aws-sdk');
 const { pipeP } = require('./ramdaP');
 
-var AWS = require('aws-sdk'),
-  region = 'us-east-1',
-  secret,
-  decodedBinarySecret
-
-var client = new AWS.SecretsManager({
-  region: region,
-})
+const client = new AWS.SecretsManager({ region: 'us-east-1' });
 
 const getSecret = promisify(bind(client.getSecretValue, client));
 
@@ -18,6 +14,5 @@ module.exports = pipeP([
   apply(objOf),
   getSecret,
   prop('SecretString'),
-  JSON.parse
+  JSON.parse,
 ]);
-

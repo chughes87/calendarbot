@@ -1,0 +1,12 @@
+{
+    "extends": "airbnb",
+    "rules": {
+        "operator-linebreak": ["error", "after"],
+        "arrow-parens": ["error", "as-needed"],
+        "implicit-arrow-linebreak": 0
+    },
+    "plugins": ["jest"],
+    "env": {
+        "jest": true
+    }
+}
