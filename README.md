@@ -13,6 +13,7 @@ You will need to set a few things up in order to utilize this tool:
 - Twilio account and phone number
 - Google account with a calendar
 - AWS account
+- Serverless account
 
 You will need to make a Google "project" for this tool to be identified as and give that project domain level access over your Google account. Once you have done that, you will have a JWT that the bot will use for accessing your calendar. You will also need to give the bot permissions on the Google calendar side.
 
