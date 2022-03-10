@@ -4,6 +4,8 @@ Service for Google calendar SMS notifications.
 
 This project is intended to be loaded into an AWS Lambda function and run every hour or on whatever schedule you choose. When run, this will check your Google calendar for events and send you an SMS message detailing the title and time of an event coming up in the next hour!
 
+I added a "daily digest" that is sent each night at 9:30PM that will give you a summary of your events for the next day!
+
 # requirements
 
 You will need to set a few things up in order to utilize this tool:
