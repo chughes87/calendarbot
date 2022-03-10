@@ -4,6 +4,8 @@ service: calendarbot
 
 frameworkVersion: '3'
 
+configValidationMode: error
+
 provider:
   name: aws
   runtime: nodejs14.x

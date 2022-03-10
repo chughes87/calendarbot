@@ -5,7 +5,7 @@ const { promisify } = require('util');
 const AWS = require('aws-sdk');
 const { pipeP } = require('./ramdaP');
 
-const client = new AWS.SecretsManager({ region: 'us-east-1' });
+const client = new AWS.SecretsManager({ region: process.env.AWS_REGION });
 
 const getSecret = promisify(bind(client.getSecretValue, client));
 
