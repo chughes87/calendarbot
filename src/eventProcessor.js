@@ -19,17 +19,24 @@ const formatEvents = pipe(
 
 const nextHour = moment().add(1, 'hour');
 const isInNextHour = date =>
-  date.utc().hour() === nextHour.utc().hour() &&
-    date.utc().date() === nextHour.utc().date();
+  date.hour() === nextHour.hour() &&
+    date.date() === nextHour.date();
 
-const filterNextHour = pipe(
+const isInNextDate = date =>
+  date.date() === moment().date() + 1;
+
+const buildFilterEvents = comparator => pipe(
   path(['data', 'items']),
   filter(pipe(
     path(startPath),
     moment,
-    isInNextHour,
+    comparator,
   )),
 );
+
+const filterNextHour = buildFilterEvents(isInNextHour);
+
+const filterNextDate = buildFilterEvents(isInNextDate);
 
 const stringifyEvents = pipe(
   map(pipe(
@@ -48,5 +55,6 @@ const stringifyEvents = pipe(
 
 module.exports = {
   filterNextHour,
+  filterNextDate,
   stringifyEvents,
 };

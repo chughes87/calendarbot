@@ -15,8 +15,14 @@ provider:
       Resource: <SECRET_ARN>
 
 functions:
-  cronHandler:
-    handler: src/index.handler
+  dailyCron:
+    handler: src/eventHandler.daily
+    events:
+      - schedule: cron(30 21 * * ? *)
+    environment:
+      TZ: America/Los_Angeles
+  hourlyCron:
+    handler: src/eventHandler.hourly
     events:
       - schedule: cron(45 * * * ? *)
     environment:
