@@ -11,11 +11,11 @@
   "dependencies": {
     "aws-sdk": "^2.938.0",
     "googleapis": "^96.0.0",
-    "moment": "^2.29.1",
     "ramda": "^0.27.1",
     "twilio": "^3.65.0"
   },
   "devDependencies": {
+    "moment": "^2.29.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-jest": "^26.1.1",
     "jest": "^27.5.1"

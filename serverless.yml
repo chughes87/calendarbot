@@ -8,6 +8,8 @@ configValidationMode: error
 
 custom:
   TZ: <YOUR_TIMEZONE>
+  layerArn: <LAYR_ARN>
+  secretArn: <SECRET_ARN>
 
 provider:
   name: aws
@@ -17,21 +19,27 @@ provider:
     - Effect: 'Allow'
       Action:
         - secretsmanager:GetSecretValue
-      Resource: <SECRET_ARN>
+      Resource: ${self:custom.secretArn}
 functions:
   dailyCron:
+    layers:
+      - ${self:custom.layerArn}
     handler: src/eventHandler.daily
     events:
-      - schedule: cron(30 5 * * ? *)
+      - schedule: cron(30 4 * * ? *)
     environment:
       TZ: ${self:custom.TZ}
   hourlyCron:
+    layers:
+      - ${self:custom.layerArn}
     handler: src/eventHandler.hourly
     events:
       - schedule: cron(45 * * * ? *)
     environment:
       TZ: ${self:custom.TZ}
   weeklyHandler:
+    layers:
+      - ${self:custom.layerArn}
     handler: src/eventHandler.weekly
     environment:
       TZ: ${self:custom.TZ}

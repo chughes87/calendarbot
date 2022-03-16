@@ -2,7 +2,6 @@ const {
   trim, filter, toPairs, join, reduce, lensPath, prop, path, groupBy, map,
   pick, over, lens, assoc, pipe, paths,
 } = require('ramda');
-const moment = require('moment');
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
 const formatDate = start =>
@@ -17,22 +16,23 @@ const formatEvents = pipe(
   join('\n'),
 );
 
-const nextHour = moment().add(1, 'hour');
+const now = new Date();
+const nextHour = now.setHours(now.getHours() + 1);
 const isInNextHour = date =>
-  date.hour() === nextHour.hour() &&
-    date.date() === nextHour.date();
+  date.getHour() === nextHour.getHour() &&
+    date.getDate() === nextHour.getDate();
 
 const isInNextDate = date =>
-  date.date() === moment().date() + 1;
+  date.getDate() === now.getDate() + 1;
 
 const isInNextWeek = date =>
-  date.date() <= moment().date() + 7;
+  date.date() <= now.getDate() + 7;
 
 const buildFilterEvents = comparator => pipe(
   path(['data', 'items']),
   filter(pipe(
     path(startPath),
-    moment,
+    start => new Date(start),
     comparator,
   )),
 );
