@@ -1,22 +1,22 @@
 const { identity } = require('ramda');
 const { pipeP, convergeP } = require('./ramdaP');
 const getEvents = require('./getEvents');
-const { filterNextDate, filterNextHour, stringifyEvents } = require('./eventProcessor');
+const { filterNextDate, filterNextHour, stringifyEvents, filterNextWeek } = require('./eventProcessor');
 const getSecret = require('./getSecret');
 const sendSMS = require('./sendSMS');
 
-const buildGetMessage = filterer => pipeP([
-  getEvents,
+const buildGetMessage = (filterer, shouldIncludeDate, maxEvents) => pipeP([
+  getEvents(maxEvents),
   filterer,
-  stringifyEvents,
+  stringifyEvents(shouldIncludeDate),
 ]);
 
-const handleEvent = filterer =>
+const handleEvent = (filterer, shouldIncludeDate, maxEvents) =>
   pipeP(
     [
       getSecret,
       convergeP(
-        [identity, buildGetMessage(filterer)],
+        [identity, buildGetMessage(filterer, shouldIncludeDate, maxEvents)],
         sendSMS,
       ),
     ],
@@ -24,5 +24,6 @@ const handleEvent = filterer =>
     err => console.log(err),
   )('calendarbot_auth');
 
-module.exports.hourly = () => handleEvent(filterNextHour);
-module.exports.daily = () => handleEvent(filterNextDate);
+module.exports.hourly = () => handleEvent(filterNextHour, false);
+module.exports.daily = () => handleEvent(filterNextDate, true);
+module.exports.weekly = () => handleEvent(filterNextWeek, true, 50);

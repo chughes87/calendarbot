@@ -6,6 +6,9 @@ frameworkVersion: '3'
 
 configValidationMode: error
 
+custom:
+  TZ: <YOUR_TIMEZONE>
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -15,17 +18,20 @@ provider:
       Action:
         - secretsmanager:GetSecretValue
       Resource: <SECRET_ARN>
-
 functions:
   dailyCron:
     handler: src/eventHandler.daily
     events:
-      - schedule: cron(30 21 * * ? *)
+      - schedule: cron(30 5 * * ? *)
     environment:
-      TZ: America/Los_Angeles
+      TZ: ${self:custom.TZ}
   hourlyCron:
     handler: src/eventHandler.hourly
     events:
       - schedule: cron(45 * * * ? *)
     environment:
-      TZ: <YOUR_TIMEZONE>
+      TZ: ${self:custom.TZ}
+  weeklyHandler:
+    handler: src/eventHandler.weekly
+    environment:
+      TZ: ${self:custom.TZ}

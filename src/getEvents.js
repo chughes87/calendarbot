@@ -1,9 +1,10 @@
 /* eslint-disable camelcase */
+const { curry } = require('ramda');
 const { google } = require('googleapis');
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 
-module.exports = ({
+module.exports = curry((maxResults, {
   client_email,
   private_key,
   project_number,
@@ -25,8 +26,8 @@ module.exports = ({
   return calendar.events.list({
     calendarId: calendar_id,
     timeMin: (new Date()).toISOString(),
-    maxResults: 10,
+    maxResults: maxResults || 10,
     singleEvents: true,
     orderBy: 'startTime',
   });
-};
+});

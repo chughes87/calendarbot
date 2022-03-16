@@ -25,6 +25,9 @@ const isInNextHour = date =>
 const isInNextDate = date =>
   date.date() === moment().date() + 1;
 
+const isInNextWeek = date =>
+  date.date() <= moment().date() + 7;
+
 const buildFilterEvents = comparator => pipe(
   path(['data', 'items']),
   filter(pipe(
@@ -35,10 +38,10 @@ const buildFilterEvents = comparator => pipe(
 );
 
 const filterNextHour = buildFilterEvents(isInNextHour);
-
 const filterNextDate = buildFilterEvents(isInNextDate);
+const filterNextWeek = buildFilterEvents(isInNextWeek);
 
-const stringifyEvents = pipe(
+const stringifyEvents = (shouldIncludeDate) => pipe(
   map(pipe(
     over(lensPath(startPath), newDate),
     over(lensPath(endPath), newDate),
@@ -49,12 +52,13 @@ const stringifyEvents = pipe(
   groupBy(prop('date')),
   toPairs,
   reduce((string, [date, events]) =>
-    `${string}${date}\n${formatEvents(events)}\n\n`, ''),
+    `${string}${shouldIncludeDate ? `${date}\n` : ''}${formatEvents(events)}\n\n`, ''),
   trim,
 );
 
 module.exports = {
   filterNextHour,
   filterNextDate,
+  filterNextWeek,
   stringifyEvents,
 };
