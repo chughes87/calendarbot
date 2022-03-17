@@ -8,11 +8,11 @@ configValidationMode: error
 
 package:
   patterns:
+    - '!node_modules/**'
     - src/**
 
 custom:
   TZ: <YOUR_TIMEZONE>
-  layerArn: <LAYR_ARN>
   secretArn: <SECRET_ARN>
 
 provider:
@@ -29,7 +29,15 @@ provider:
 
 layers:
   calendarbotdeps:
-    path: ../calendarbot-layer
+    path: .
+    package:
+      patterns:
+        - '!*'
+        - '!src/**'
+        - '!serverless_sdk/**'
+        - node_modules/**
+        - package.json
+        - package-lock.json
     compatibleRuntimes: nodejs14.x
 
 functions:
