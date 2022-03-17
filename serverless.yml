@@ -28,16 +28,9 @@ provider:
           Resource: ${self:custom.secretArn}
 
 layers:
-  calendarbotdeps:
-    path: .
+  calendarbotDependencies:
     package:
-      patterns:
-        - '!*'
-        - '!src/**'
-        - '!serverless_sdk/**'
-        - node_modules/**
-        - package.json
-        - package-lock.json
+      artifact: dependencies.zip
     compatibleRuntimes: nodejs14.x
 
 functions:
@@ -48,7 +41,7 @@ functions:
     environment:
       TZ: ${self:custom.TZ}
     layers:
-      - { Ref: CalendarbotdepsLambdaLayer}
+      - { Ref: CalendarbotDependenciesLambdaLayer}
   hourlyCron:
     handler: src/eventHandler.hourly
     events:
@@ -56,10 +49,10 @@ functions:
     environment:
       TZ: ${self:custom.TZ}
     layers:
-      - { Ref: CalendarbotdepsLambdaLayer}
+      - { Ref: CalendarbotDependenciesLambdaLayer}
   weeklyHandler:
     handler: src/eventHandler.weekly
     environment:
       TZ: ${self:custom.TZ}
     layers:
-      - { Ref: CalendarbotdepsLambdaLayer}
+      - { Ref: CalendarbotDependenciesLambdaLayer}
