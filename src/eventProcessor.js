@@ -27,7 +27,7 @@ const isInNextDate = date =>
   date.getDate() === now.getDate() + 1;
 
 const isInNextWeek = date =>
-  date.date() <= now.getDate() + 7;
+  date.getDate() <= now.getDate() + 7;
 
 const buildFilterEvents = comparator => pipe(
   path(['data', 'items']),
