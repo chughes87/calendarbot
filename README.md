@@ -27,4 +27,4 @@ Setup Serverless if you haven't already. See https://www.serverless.com/framewor
 
 # deployment
 
-Run `serverless deploy` and you should be good to go!
+Run `npm run build` and then `npm run deploy` and you should be good to go!
