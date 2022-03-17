@@ -1,4 +1,4 @@
-org: <YOUR_ORG>
+org: ${file(./package.json):serverless.org}
 app: calendarbot
 service: calendarbot
 
