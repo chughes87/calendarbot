@@ -6,32 +6,54 @@ frameworkVersion: '3'
 
 configValidationMode: error
 
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!dependencies.zip'
+    - src/**
+
 custom:
   TZ: <YOUR_TIMEZONE>
+  secretArn: <SECRET_ARN>
 
 provider:
   name: aws
   runtime: nodejs14.x
   region: us-west-1
-  iamRoleStatements:
-    - Effect: 'Allow'
-      Action:
-        - secretsmanager:GetSecretValue
-      Resource: <SECRET_ARN>
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - secretsmanager:GetSecretValue
+          Resource: ${self:custom.secretArn}
+
+layers:
+  calendarbotDependencies:
+    package:
+      artifact: dependencies.zip
+    compatibleRuntimes: nodejs14.x
+
 functions:
   dailyCron:
     handler: src/eventHandler.daily
     events:
-      - schedule: cron(30 5 * * ? *)
+      - schedule: cron(30 4 * * ? *)
     environment:
       TZ: ${self:custom.TZ}
+    layers:
+      - { Ref: CalendarbotDependenciesLambdaLayer}
   hourlyCron:
     handler: src/eventHandler.hourly
     events:
       - schedule: cron(45 * * * ? *)
     environment:
       TZ: ${self:custom.TZ}
+    layers:
+      - { Ref: CalendarbotDependenciesLambdaLayer}
   weeklyHandler:
     handler: src/eventHandler.weekly
     environment:
       TZ: ${self:custom.TZ}
+    layers:
+      - { Ref: CalendarbotDependenciesLambdaLayer}
