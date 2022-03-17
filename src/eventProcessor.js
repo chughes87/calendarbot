@@ -17,9 +17,10 @@ const formatEvents = pipe(
 );
 
 const now = new Date();
-const nextHour = now.setHours(now.getHours() + 1);
+const nextHour = new Date(now);
+nextHour.setHours(now.getHours() + 1);
 const isInNextHour = date =>
-  date.getHour() === nextHour.getHour() &&
+  date.getHours() === nextHour.getHours() &&
     date.getDate() === nextHour.getDate();
 
 const isInNextDate = date =>
