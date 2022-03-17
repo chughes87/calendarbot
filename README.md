@@ -23,7 +23,7 @@ All secrets (Google JWT, Twilio keys, your phone number, the Twilio phone number
 
 Add a secret to your AWS secrets manager with the values indicated in secret_example.json. Copy the ARN of that secret and paste it in place of <SECRET_ARN> in serverless.yml. While you're there, enter your usual timezone in place of <YOUR_TIMEZONE>. Sorry, this tool won't work well for travelers...
 
-Setup Serverless if you haven't already. See https://www.serverless.com/framework/docs/getting-started. Replace <YOUR_ORG> in package.json with your Serverless org's name.
+Setup Serverless if you haven't already. See https://www.serverless.com/framework/docs/getting-started. Replace <YOUR_ORG> in package.json and serverless.yml with your Serverless org's name.
 
 # deployment
 
