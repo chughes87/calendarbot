@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "./build.sh",
+    "deploy": "serverless deploy",
     "test": "jest"
   },
   "author": "chughes87@gmail.com",

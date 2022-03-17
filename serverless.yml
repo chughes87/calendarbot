@@ -9,6 +9,7 @@ configValidationMode: error
 package:
   patterns:
     - '!node_modules/**'
+    - '!dependencies.zip'
     - src/**
 
 custom:
