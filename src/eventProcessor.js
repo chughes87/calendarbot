@@ -23,11 +23,17 @@ const isInNextHour = date =>
   date.getHours() === nextHour.getHours() &&
     date.getDate() === nextHour.getDate();
 
-const isInNextDate = date =>
-  date.getDate() === now.getDate() + 1;
+const isInNextDate = date => {
+  const testDate = new Date(now);
+  testDate.setDate(testDate.getDate() + 1);
+  return date.getDate() === testDate.getDate();
+}
 
-const isInNextWeek = date =>
-  date.getDate() <= now.getDate() + 7;
+const isInNextWeek = date => {
+  const testDate = new Date(now);
+  testDate.setDate(testDate.getDate() + 7);
+  return date.getDate() <= testDate.getDate();
+}
 
 const buildFilterEvents = comparator => pipe(
   path(['data', 'items']),
