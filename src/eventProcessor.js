@@ -17,29 +17,31 @@ const formatEvents = pipe(
 );
 
 const now = new Date();
-const nextHour = new Date(now);
-nextHour.setHours(now.getHours() + 1);
-const isInNextHour = date =>
-  date.getHours() === nextHour.getHours() &&
+
+const isInNextHour = date => {
+  const nextHour = new Date(now);
+  nextHour.setHours(now.getHours() + 1);
+  return date.getHours() === nextHour.getHours() &&
     date.getDate() === nextHour.getDate();
+}
 
 const isInNextDate = date => {
-  const testDate = new Date(now);
-  testDate.setDate(testDate.getDate() + 1);
-  return date.getDate() === testDate.getDate();
+  const nextDate = new Date(now);
+  nextDate.setDate(nextDate.getDate() + 1);
+  return date.getDate() === nextDate.getDate();
 }
 
 const isInNextWeek = date => {
-  const testDate = new Date(now);
-  testDate.setDate(testDate.getDate() + 7);
-  return date.getDate() <= testDate.getDate();
+  const nextWeek = new Date(now);
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  return date.getDate() <= nextWeek.getDate();
 }
 
 const buildFilterEvents = comparator => pipe(
   path(['data', 'items']),
   filter(pipe(
     path(startPath),
-    start => new Date(start),
+    newDate,
     comparator,
   )),
 );
