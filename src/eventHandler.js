@@ -11,12 +11,16 @@ const buildGetMessage = (filterer, shouldIncludeDate, maxEvents) => pipeP([
   stringifyEvents(shouldIncludeDate),
 ]);
 
-const handleEvent = (filterer, shouldIncludeDate, maxEvents) =>
+const getHourlyMessage = buildGetMessage(filterNextHour, false);
+const getDailyMessage = buildGetMessage(filterNextDate, true);
+const getWeeklyMessage = buildGetMessage(filterNextWeek, true, 50);
+
+const handleEvent = (getMessage) =>
   pipeP(
     [
       getSecret,
       convergeP(
-        [identity, buildGetMessage(filterer, shouldIncludeDate, maxEvents)],
+        [identity, getMessage],
         sendSMS,
       ),
     ],
@@ -24,6 +28,6 @@ const handleEvent = (filterer, shouldIncludeDate, maxEvents) =>
     err => console.log(err),
   )('calendarbot_auth');
 
-module.exports.hourly = () => handleEvent(filterNextHour, false);
-module.exports.daily = () => handleEvent(filterNextDate, true);
-module.exports.weekly = () => handleEvent(filterNextWeek, true, 50);
+module.exports.hourly = () => handleEvent(getHourlyMessage)
+module.exports.daily = () => handleEvent(getDailyMessage);
+module.exports.weekly = () => handleEvent(getWeeklyMessage);
