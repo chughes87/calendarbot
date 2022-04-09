@@ -16,23 +16,21 @@ const formatEvents = pipe(
   join('\n'),
 );
 
-const now = new Date();
-
 const isInNextHour = date => {
-  const nextHour = new Date(now);
-  nextHour.setHours(now.getHours() + 1);
+  const nextHour = new Date();
+  nextHour.setHours(nextHour.getHours() + 1);
   return date.getHours() === nextHour.getHours() &&
     date.getDate() === nextHour.getDate();
 }
 
 const isInNextDate = date => {
-  const nextDate = new Date(now);
+  const nextDate = new Date();
   nextDate.setDate(nextDate.getDate() + 1);
   return date.getDate() === nextDate.getDate();
 }
 
 const isInNextWeek = date => {
-  const nextWeek = new Date(now);
+  const nextWeek = new Date();
   nextWeek.setDate(nextWeek.getDate() + 7);
   return date.getDate() <= nextWeek.getDate();
 }
